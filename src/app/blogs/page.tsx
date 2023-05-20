@@ -1,5 +1,5 @@
 import React from 'react';
-import notion from '@/lib/notion';
+import { notion } from '@/lib/notion';
 import BlogsPage from '@/components/pageComponents/blogs/blogsPage';
 
 async function getData() {
