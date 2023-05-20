@@ -4,13 +4,15 @@ import { NotionToMarkdown } from 'notion-to-md';
 import ReactMarkdown from 'react-markdown';
 import { NotionImage } from '@/components/sharedComponents/notionImage';
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const blogs = await notion.databases.query({
     database_id: process.env.NOTION_DATABASE_ID,
   });
 
   return blogs.results.map((blog: any) => ({
-    slug: blog.properties.Slug.rich_text[0].plain_text,
+    blog: blog.properties.Slug.rich_text[0].plain_text,
   }));
 }
 
@@ -47,6 +49,7 @@ async function getData(slug: any) {
 }
 
 const Blog = async ({ params }: { params: { blog: string } }) => {
+  console.log(params);
   const data = await getData(params.blog);
 
   const MarkdownComponents: object = {
@@ -62,7 +65,10 @@ const Blog = async ({ params }: { params: { blog: string } }) => {
         const height = metaHeight ? metaHeight[1] : '432';
 
         return (
-          <div className="my-[2rem]">
+          <div
+            style={{ height: height + 'px' }}
+            className="my-[2rem] relative w-100 object-contain"
+          >
             <NotionImage
               src={image.properties.src.replace(/(\?|&)blockId=[^&]+/g, '')}
               alt={alt}
